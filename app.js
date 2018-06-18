@@ -17,16 +17,34 @@ class UI{
           <strong>Sneaker:</strong> ${sneaker.name}
           <strong>Price:</strong> ${sneaker.price}
           <strong>Year:</strong> ${sneaker.year}
+          <a class="btn btn-danger" href="#" name="delete">Delete</a>
         </div>
       </div>
     `;
     sneakerList.appendChild(element);
+    this.resetForm();
   }
-  deleteSneaker(){
-
+  resetForm(){
+    document.getElementById('sneaker-form').reset();
   }
-  showMessage(){
+  deleteSneaker(elemento){
+    if(elemento.name === 'delete'){
+      elemento.parentElement.parentElement.parentElement.remove();
+      this.showMessage('Sneaker deleted successfully','danger');
+    }
+  }
+  showMessage(messsage, cssClass){
+    const div =  document.createElement('div');
+    div.className = `alert alert-${cssClass} mt-4`;
+    div.appendChild(document.createTextNode(messsage));
+    /// Showing in DOM
+    const container = document.querySelector('.container');
+    const app = document.querySelector('#App');
 
+    container.insertBefore(div,app);
+    setTimeout(()=>{
+      document.querySelector('.alert').remove();
+    },3000);
   }
 }
 //DOM Events
@@ -39,6 +57,17 @@ document.getElementById('sneaker-form')
 
     const sneaker = new Sneaker(name,price,year);
     const ui = new UI();
-    ui.addSneaker(sneaker);
+    if(name === '' || price === '' || year === ''){
+      ui.showMessage('Complete Fields Please','info');
+    }else{
+      ui.addSneaker(sneaker);
+      ui.showMessage('Sneaker added successfully','success');
+    }
+
     //console.log(sneaker);
   });
+
+document.getElementById('sneaker-list').addEventListener('click',(e)=>{
+  const ui = new UI();
+  ui.deleteSneaker(e.target);
+})
